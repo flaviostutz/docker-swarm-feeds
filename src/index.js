@@ -13,6 +13,10 @@ app.use(bodyParser.json());
 
 DomainsFeed.config(app);
 
+app.get('/', (req, res) => {
+    res.redirect('/traefik-domains?format=html');
+})
+
 app.get('/health', (req, res) => {
     res.send('OK');
 });
@@ -20,7 +24,6 @@ app.get('/health', (req, res) => {
 let server = app.listen(PORT, function () {
     logger.info(`running on port  ${PORT}`);
 });
-
 
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
