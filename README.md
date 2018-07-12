@@ -1,9 +1,10 @@
 # docker-swarm-feeds
-HTTP endpoints for fetching various feeds from Swarm (traefik domain tags, latest service updates, etc)
+HTTP endpoints for fetching various feeds from Swarm (traefik domain labels etc)
 
 ## Usage
 
 docker-compose-yml
+
 ```
 version: '3'
 services:
@@ -19,4 +20,7 @@ services:
 
 ## Endpoints
 
-* /domains
+* /traefik-domains
+  * returns a list of domains that were found by searching for the label "traefik.frontend.rule" over all deployed services in Swarm
+  * the response is in jsonfeed format by default
+  * /traefik-domains?format=html returns a web page instead
