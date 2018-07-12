@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+
+ feeds:
+  build: .
+  ports:
+    - "8000:8000"
+  environment:
+    - FEED_NAME=test
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+
