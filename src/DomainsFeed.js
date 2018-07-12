@@ -1,6 +1,6 @@
 const Feed = require('feed');
 const util = require('util');
-const exec = util.promisify(require('child_process').exec);
+const { spawn } = require('child_process');
 
 class DomainsFeed {
 
@@ -65,14 +65,54 @@ class DomainsFeed {
     }
 
     static async getSwarmServices() {
-        const shellres = await exec('docker service inspect $(docker service ls -q)');
-        const services = shellres.stdout;
+        return new Promise(async (resolve, reject) => {
+            try {
 
-        const servicesJson = JSON.parse(services);
-        servicesJson.sort(function (a, b) {
-            return new Date(b.UpdatedAt).getTime() - new Date(a.UpdatedAt).getTime();
+                //docker service inspect $(docker service ls - q)
+                let servicesList = await DomainsFeed.spawnSync('docker service ls -q');
+                String.prototype.replaceAll = function (search, replacement) {
+                    var target = this;
+                    return target.replace(new RegExp(search, 'g'), replacement);
+                };
+                servicesList = servicesList.replaceAll('\n', ' ').trim();
+                const services = await DomainsFeed.spawnSync(`docker service inspect ${servicesList}`);
+                const servicesJson = JSON.parse(services);
+                servicesJson.sort(function (a, b) {
+                    return new Date(b.UpdatedAt).getTime() - new Date(a.UpdatedAt).getTime();
+                });
+                resolve(servicesJson);
+                
+            } catch (error) {
+                console.log(error);
+                reject("ERROR: "+ error);
+            }
         });
-        return servicesJson;
+    }
+
+    static async spawnSync(command) {
+        return new Promise((resolve, reject)=> {
+            const tc = command.split(' ');
+            const cmd = tc.shift();
+            console.log(cmd);
+            console.log(tc);
+            const shellres = spawn(cmd, tc);
+
+            let result = '';
+            shellres.on('error', (error) => {
+                console.log(`ERROR: ${error}`);
+                reject(error);
+            })
+            shellres.stdout.on('data', (data) => {
+                result += data
+            });
+            shellres.stderr.on('data', (data) => {
+                console.log(`STERR: ${data}`);
+                reject(data);
+            });
+            shellres.on('close', (code) => {
+                resolve(result);
+            });
+        });
     }
 
 }
