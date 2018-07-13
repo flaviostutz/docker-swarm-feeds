@@ -93,8 +93,6 @@ class DomainsFeed {
         return new Promise((resolve, reject)=> {
             const tc = command.split(' ');
             const cmd = tc.shift();
-            console.log(cmd);
-            console.log(tc);
             const shellres = spawn(cmd, tc);
 
             let result = '';
