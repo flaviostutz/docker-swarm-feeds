@@ -22,11 +22,18 @@ class DomainsFeed {
                 const servicesJson = await DomainsFeed.getSwarmServices();
                 servicesJson.forEach(function(service) {
                     if (service.Spec != null && service.Spec.Labels != null) {
-                        const hostAddress = service.Spec.Labels["traefik.frontend.rule"];
-                        if (hostAddress != null) {
-                            const address = hostAddress.replace("Host:", "");
-                            html += `  <li><a href=http://${address}>http://${address}</a> - ${service.Spec.Name} - ${service.ID} - ${new Date(service.UpdatedAt)}</li>`;
-                        }
+                        service.Spec.Labels.forEach(function (value, key, map) {
+                            service.Spec.Labels["traefik.frontend.rule"];
+                            var re = /traefik\..*frontend\.rule/;
+                            var r = key.match(re)
+                            if (r) {
+                                const hostAddress = value;
+                                if (hostAddress != null) {
+                                    const address = hostAddress.replace("Host:", "");
+                                    html += `  <li><a href=http://${address}>http://${address}</a> - ${service.Spec.Name} - ${service.ID} - ${new Date(service.UpdatedAt)}</li>`;
+                                }
+                            }
+                        });
                     }
                 })
                 html += '</ul>';
