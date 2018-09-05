@@ -3,11 +3,24 @@ version: '3'
 services:
 
  feeds:
-  build: .
-  ports:
-    - "8000:8000"
-  environment:
-    - FEED_NAME=test
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+   build: .
+   image: docker-swarm-feeds_feeds
+   ports:
+     - "8000:8000"
+   environment:
+     - FEED_NAME=test
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
 
+ sample:
+   image: vad1mo/hello-world-rest
+   ports:
+     - 5050:5050
+   deploy:
+    labels:
+       - traefik.internal.frontend.rule=Host:test.com
+       - traefik.internal.port=5050
+       - traefik.internal.frontend.entryPoints=internal_http,internal_https
+       - traefik.external.frontend.rule=Host:test.com
+       - traefik.external.port=5050
+       - traefik.external.frontend.entryPoints=external_http,external_https

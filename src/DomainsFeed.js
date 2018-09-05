@@ -20,12 +20,16 @@ class DomainsFeed {
 
                 html += '<ul>';
                 const servicesJson = await DomainsFeed.getSwarmServices();
+                // console.log(">>>>json " + JSON.stringify(servicesJson));
                 servicesJson.forEach(function(service) {
+                    // console.log(">>>>" + service)
                     if (service.Spec != null && service.Spec.Labels != null) {
-                        service.Spec.Labels.forEach(function (value, key, map) {
-                            service.Spec.Labels["traefik.frontend.rule"];
+                        for (var key in service.Spec.Labels) {
+                            var value = service.Spec.Labels[key];
+                            // console.log(">>>>v" + value + " k="+ key)
                             var re = /traefik\..*frontend\.rule/;
                             var r = key.match(re)
+                            // console.log(">>>>m " + r)
                             if (r) {
                                 const hostAddress = value;
                                 if (hostAddress != null) {
@@ -33,7 +37,7 @@ class DomainsFeed {
                                     html += `  <li><a href=http://${address}>http://${address}</a> - ${service.Spec.Name} - ${service.ID} - ${new Date(service.UpdatedAt)}</li>`;
                                 }
                             }
-                        });
+                        }
                     }
                 })
                 html += '</ul>';
@@ -53,15 +57,23 @@ class DomainsFeed {
                 const servicesJson = await DomainsFeed.getSwarmServices();
                 servicesJson.forEach(function (service) {
                     if (service.Spec != null && service.Spec.Labels != null) {
-                        const hostAddress = service.Spec.Labels["traefik.frontend.rule"];
-                        if (hostAddress != null) {
-                            const address = hostAddress.replace("Host:", "");
-                            feed.addItem({
-                                id: service.ID,
-                                date: new Date(service.UpdatedAt),
-                                title: service.Spec.Name,
-                                link: `http://${address}`,
-                            })
+                        for (var key in service.Spec.Labels) {
+                            var value = service.Spec.Labels[key];
+                            // service.Spec.Labels["traefik.frontend.rule"];
+                            var re = /traefik\..*frontend\.rule/;
+                            var r = key.match(re)
+                            if (r) {
+                                const hostAddress = value;
+                                if (hostAddress != null) {
+                                    const address = hostAddress.replace("Host:", "");
+                                    feed.addItem({
+                                        id: service.ID,
+                                        date: new Date(service.UpdatedAt),
+                                        title: service.Spec.Name,
+                                        link: `http://${address}`,
+                                    })
+                                }
+                            }
                         }
                     }
                 })

@@ -21,6 +21,6 @@ services:
 ## Endpoints
 
 * /traefik-domains
-  * returns a list of domains that were found by searching for the label "traefik.frontend.rule" over all deployed services in Swarm
+  * returns a list of domains that were found by searching for the label "traefik.frontend.rule" over all deployed services in Swarm. "traefik.[optional-name.]frontend.rule" is also supported
   * the response is in jsonfeed format by default
   * /traefik-domains?format=html returns a web page instead
