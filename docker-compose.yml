@@ -21,6 +21,6 @@ services:
        - traefik.internal.frontend.rule=Host:test.com
        - traefik.internal.port=5050
        - traefik.internal.frontend.entryPoints=internal_http,internal_https
-       - traefik.external.frontend.rule=Host:test.com
+       - traefik.external.frontend.rule=Host:test.com,test1.com
        - traefik.external.port=5050
        - traefik.external.frontend.entryPoints=external_http,external_https
