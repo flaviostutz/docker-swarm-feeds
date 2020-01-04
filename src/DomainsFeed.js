@@ -34,7 +34,11 @@ class DomainsFeed {
                                 const hostAddress = value;
                                 if (hostAddress != null) {
                                     const address = hostAddress.replace("Host:", "");
-                                    html += `  <li><a href=http://${address}>http://${address}</a> - ${service.Spec.Name} - ${service.ID} - ${new Date(service.UpdatedAt)}</li>`;
+                                    var addresses = address.split(',')
+                                    for (i = 0; i < addresses.length; i++) { 
+                                        addr = addresses[i].trim()
+                                        html += `  <li><a href=http://${addr}>http://${addr}</a> - ${service.Spec.Name} - ${service.ID} - ${new Date(service.UpdatedAt)}</li>`;
+                                    }
                                 }
                             }
                         }
